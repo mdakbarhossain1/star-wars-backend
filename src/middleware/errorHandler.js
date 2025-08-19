@@ -1,5 +1,5 @@
 // src/middleware/errorHandler.js
-import { ApiError } from '../utils/errors';
+const ApiError = require('../utils/errors').ApiError;
 
 const errorHandler = (err, req, res, next) => {
   console.error('Error:', err);
@@ -31,5 +31,4 @@ const errorHandler = (err, req, res, next) => {
     }
   });
 };
-
-module.exports = { errorHandler };
+module.exports = errorHandler;

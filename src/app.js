@@ -1,4 +1,3 @@
-// src/app.js
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,8 +5,8 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 const characterRoutes = require('./routes/characters');
-const { errorHandler } = require('./middleware/errorHandler');
-const { requestLogger } = require('./middleware/requestLogger');
+const errorHandler = require('./middleware/errorHandler'); // Remove destructuring
+const requestLogger = require('./middleware/requestLogger'); // Remove destructuring
 
 const app = express();
 
@@ -24,7 +23,7 @@ app.use(cors({
 
 // Logging
 app.use(morgan('combined'));
-app.use(requestLogger);
+app.use(requestLogger); // Use the imported middleware directly
 
 // Rate limiting
 const limiter = rateLimit({
@@ -51,6 +50,6 @@ app.use('*', (req, res) => {
 });
 
 // Error handling middleware
-app.use(errorHandler);
+app.use(errorHandler); // Use the imported middleware directly
 
 module.exports = app;

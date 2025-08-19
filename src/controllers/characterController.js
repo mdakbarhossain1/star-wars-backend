@@ -1,7 +1,7 @@
 // src/controllers/characterController.js
 
-import swapiService from "../services/swapiService"
-import {ApiError} from "../utils/errors"
+const swapiService = require("../services/swapiService");
+const {ApiError} = require("../utils/errors")
 
 class CharacterController {
   // Get paginated list of characters

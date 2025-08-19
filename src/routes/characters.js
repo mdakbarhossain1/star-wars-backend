@@ -1,12 +1,11 @@
-// src/routes/characters.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const characterController = require('../controllers/characterController');
 
 // Get all characters with pagination
 router.get('/', characterController.getCharacters);
 
-// Search characters by name
+// Search characters by name - FIXED: Make sure this comes before :id route
 router.get('/search', characterController.searchCharacters);
 
 // Get character by ID

@@ -1,7 +1,7 @@
 // src/services/swapiService.js
 // const axios = require('axios');
-import axios from axios;
-import cache from '../utils/cache';
+const axios = require("axios");
+const cache = require('../utils/cache');
 
 const SWAPI_BASE_URL = 'https://www.swapi.tech/api';
 

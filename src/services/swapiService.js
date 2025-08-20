@@ -1,44 +1,32 @@
-// src/services/swapiService.js
-// const axios = require('axios');
 const axios = require("axios");
-const cache = require('../utils/cache');
+const { cache } = require("../utils/cache");
 
-const SWAPI_BASE_URL = 'https://www.swapi.tech/api';
+const SWAPI_BASE_URL = "https://www.swapi.tech/api";
 
-// Create axios instance with default config
+// Axios instance
 const apiClient = axios.create({
   baseURL: SWAPI_BASE_URL,
   timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  }
+  headers: { "Content-Type": "application/json" },
 });
 
-// Request interceptor for logging
+// Logging interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to: ${config.url}`);
+    console.log(
+      `Making ${config.method?.toUpperCase()} request to: ${config.url}`
+    );
     return config;
   },
-  (error) => {
-    console.error('Request error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor for error handling
+// Error logging
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API response error:', error.message);
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error('No response received:', error.request);
-    }
+    console.error("API response error:", error.message);
+    if (error.response) console.error("Response data:", error.response.data);
     return Promise.reject(error);
   }
 );
@@ -48,7 +36,7 @@ class SwapiService {
     this.cacheEnabled = true;
   }
 
-  // Generic request method with caching
+  // Generic request with caching
   async request(url, cacheKey, ttl = 600) {
     if (this.cacheEnabled) {
       const cachedData = cache.get(cacheKey);
@@ -61,11 +49,9 @@ class SwapiService {
     try {
       const response = await apiClient.get(url);
       const data = response.data;
-      
-      if (this.cacheEnabled) {
-        cache.set(cacheKey, data, ttl);
-      }
-      
+
+      if (this.cacheEnabled) cache.set(cacheKey, data);
+
       return data;
     } catch (error) {
       console.error(`Error fetching from SWAPI: ${error.message}`);
@@ -73,47 +59,59 @@ class SwapiService {
     }
   }
 
-  // Get all characters with pagination
+  // Get paginated list of characters
   async getCharacters(page = 1, limit = 10) {
     const cacheKey = `characters_page_${page}_limit_${limit}`;
     const url = `/people?page=${page}&limit=${limit}`;
-    
-    return this.request(url, cacheKey);
+    const data = await this.request(url, cacheKey);
+
+    if (!data || !data.results) {
+      return { results: [] };
+    }
+
+    return data;
+  }
+
+  async getAllCharacters() {
+    const cacheKey = "all_characters";
+    const data = await this.request("/people", cacheKey);
+    return data.results || [];
   }
 
   // Search characters by name
-  async searchCharacters(name, page = 1, limit = 10) {
-    const cacheKey = `search_${name}_page_${page}_limit_${limit}`;
-    const url = `/people?name=${encodeURIComponent(name)}&page=${page}&limit=${limit}`;
-    
-    return this.request(url, cacheKey);
+  async searchCharacters(name) {
+    const cacheKey = `search_${name}`;
+    const url = `/people/?search=${encodeURIComponent(name)}`;
+    const data = await this.request(url, cacheKey);
+
+    if (!data || !data.result) return { results: [] };
+
+    // swapi.tech returns `result` array directly
+    return { results: data.result };
   }
 
   // Get character by ID
   async getCharacterById(id) {
     const cacheKey = `character_${id}`;
     const url = `/people/${id}`;
-    
     return this.request(url, cacheKey);
   }
 
-  // Get additional details (films, planets, etc.)
+  // Get single resource by URL
   async getResource(url) {
-    const cacheKey = `resource_${url.split('/').pop()}`;
-    return this.request(url, cacheKey, 3600); // Longer TTL for static resources
+    const cacheKey = `resource_${url.split("/").pop()}`;
+    return this.request(url, cacheKey, 3600);
   }
 
-  // Batch get resources
+  // Get multiple resources
   async getResources(urls) {
-    return Promise.all(urls.map(url => this.getResource(url)));
+    return Promise.all(urls.map((url) => this.getResource(url)));
   }
 
-  // Disable cache for testing or specific scenarios
   disableCache() {
     this.cacheEnabled = false;
   }
 
-  // Enable cache
   enableCache() {
     this.cacheEnabled = true;
   }

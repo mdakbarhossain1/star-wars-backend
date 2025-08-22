@@ -34,7 +34,6 @@ class CharacterController {
   };
 
   // Search characters by name
-  // Search characters by name
   searchCharacters = async (req, res, next) => {
     try {
       const searchTerm = (

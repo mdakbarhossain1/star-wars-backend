@@ -6,7 +6,7 @@ const characterController = require("../controllers/characterController");
 router.get("/", characterController.getCharacters);
 
 // Search characters by name - FIXED: Make sure this comes before :id route
-router.get("/search", characterController.searchCharacters); // http://localhost:8080/api/characters/search?name=Luke
+router.get("/search", characterController.searchCharacters); // http://star-wars-backend-iota.vercel.app/api/characters/search?name=Luke
 
 // Get character by ID
 router.get("/:id", characterController.getCharacter);

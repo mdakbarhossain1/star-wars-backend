@@ -13,29 +13,65 @@ This backend service interacts with the [SWAPI.tech API](https://www.swapi.tech)
 - **Node-cache** for in-memory caching
 - **Project Structure:**
 
+```
 star-wars-backend/
 ├─ src/
-│ ├─ config/
-│ │ └─ index.js
-│ ├─ controllers/
-│ │ └─ characterController.js
-│ ├─ middleware/
-│ │ ├─ errorHandler.js
-│ │ └─ requestLogger.js
-│ ├─ routes/
-│ │ └─ characters.js
-│ ├─ services/
-│ │ └─ swapiService.js
-│ ├─ utils/
-│ │ ├─ cache.js
-│ │ └─ errors.js
-│ └─ app.js
+│  ├─ config/
+│  │   └─ index.js
+│  ├─ controllers/
+│  │   └─ characterController.js
+│  ├─ middleware/
+│  │   ├─ errorHandler.js
+│  │   └─ requestLogger.js
+│  ├─ routes/
+│  │   └─ characters.js
+│  ├─ services/
+│  │   └─ swapiService.js
+│  ├─ utils/
+│  │   ├─ cache.js
+│  │   └─ errors.js
+│  └─ app.js
 ├─ .gitignore
 ├─ package-lock.json
 ├─ package.json
 ├─ readme.md
 ├─ server.js
 └─ test-cache.js
+```
+
+## Features
+
+- **Paginated character listing:**  
+   `GET /api/characters?page=&limit=` – Retrieve characters with pagination.
+
+- **Search characters by name:**  
+   `GET /api/characters/search?name=Luke` – Search for characters using a name query.
+
+- **Get character details by ID:**  
+   `GET /api/characters/:id` – Fetch detailed information for a specific character.
+
+- **Enhanced details:**  
+   Character endpoints also fetch related films, species, starships, vehicles, and homeworld data.
+
+- **Caching:**  
+   In-memory caching is used for API calls to minimize redundant requests.
+
+- **Error handling:**  
+   Standardized API error responses for consistent client experience.
+
+- **Security:**  
+   Includes Helmet for HTTP headers, CORS support, rate limiting, and request logging middleware.
+
+- **Health check endpoint:**  
+   `GET /health` – Simple endpoint to verify service status.
+
+  ## 🏗️ Tech Stack
+
+  - **Backend Framework:** Node.js + Express.js
+  - **HTTP Client:** Axios
+  - **Middleware:** Helmet, CORS, Morgan, express-rate-limit
+  - **Error Handling:** Custom `ApiError` class
+  - **Caching:** In-memory caching (custom cache utility)
 
 ## Modules
 
@@ -169,6 +205,14 @@ The backend follows this caching flow:
 - Add automated tests (Jest or Mocha)
 - Add support for more SWAPI endpoints (planets, starships, etc.)
 
+### Additional Future Improvements
+
+- Add authentication for private API endpoints
+- Support caching with Redis for better performance
+- Implement full-text search
+- Add logging to external monitoring (Sentry/LogRocket)
+- Dockerize for production deployment
+
 ---
 
 ## Author
@@ -182,3 +226,7 @@ git clone <your-repo-url>
 cd star-wars-backend
 npm install
 ```
+
+📄 License
+
+MIT License © 2025 Md Akbar Hossain
